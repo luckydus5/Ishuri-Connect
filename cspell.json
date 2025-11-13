@@ -1,0 +1,29 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "Ishuri",
+    "colorama",
+    "luckydus",
+    "AUCA",
+    "venv",
+    "gitignore",
+    "pyc",
+    "pwsh",
+    "sqltools",
+    "pylance",
+    "datetime",
+    "dataclass",
+    "dataclasses",
+    "dotenv"
+  ],
+  "ignoreWords": [],
+  "ignorePaths": [
+    "node_modules/**",
+    ".vscode/**",
+    ".git/**",
+    "ishuri/**",
+    "__pycache__/**",
+    "*.pyc"
+  ]
+}

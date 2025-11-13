@@ -4,15 +4,16 @@ A student-school matching platform that helps students find educational institut
 
 ## Features
 
-- Student registration with profile creation
-- Academic marks tracking and average calculation
-- Email validation
-- School recommendation based on:
+- ✨ **Beautiful colored CLI interface** with icons and professional formatting
+- 👤 Student registration with profile creation
+- 📊 Academic marks tracking and average calculation
+- 📧 Email validation
+- 🎯 School recommendation based on:
   - Course interest
   - Academic performance (average marks)
   - School admission requirements
-- Database support for persistent storage (optional)
-- User-friendly CLI interface
+- 💾 Database support for persistent storage (optional)
+- 🎨 Modern user experience with visual feedback
 
 ## Prerequisites
 
@@ -43,6 +44,11 @@ A student-school matching platform that helps students find educational institut
    ```bash
    pip install -r requirements.txt
    ```
+   
+   This will install:
+   - `mysql-connector-python` - MySQL database driver
+   - `python-dotenv` - Environment variable management
+   - `colorama` - Colored terminal output
 
 4. **Configure database (optional)**
    - Create a MySQL database
@@ -59,8 +65,23 @@ A student-school matching platform that helps students find educational institut
 
 ### Run the application
 
+**Windows (Command Prompt):**
+```cmd
+run.bat
+```
+
+**Windows (PowerShell):**
+```powershell
+.\run.ps1
+```
+
+**Or manually with virtual environment:**
 ```bash
-python main.py
+# Windows
+.\ishuri\Scripts\python.exe main.py
+
+# Linux/Mac
+./ishuri/bin/python main.py
 ```
 
 ### Registration Flow
@@ -75,45 +96,64 @@ python main.py
 ### Example Session
 
 ```
-==================================================
-    ISHURI CONNECT - School Matching Platform
-==================================================
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║        🎓  ISHURI CONNECT - School Matching Platform  🎓        ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
 
-Welcome! This platform helps students find schools
-that match their academic profile and interests.
+  Welcome! This platform helps students find schools
+  that match their academic profile and interests.
 
-Press Ctrl+C at any time to exit.
+  💡 Tip: Press Ctrl+C at any time to exit.
 
-==================================================
+  ──────────────────────────────────────────────────────────────────
 
- === Student Registration Process Initiated. =======
+  ┌─────────────────────────────────────────────────────────────────┐
+  │ 📝  STUDENT REGISTRATION                                         │
+  └─────────────────────────────────────────────────────────────────┘
 
-Enter your first name: John
-Enter your last name: Doe
-Enter your email address: john.doe@example.com
-Which course are you interested in? Computer Science
+  Please provide your details below:
 
-Thank you John Doe for registering with email: john.doe@example.com
-Now enter your marks (press Enter without typing to finish):
+  👤 First name: John
+  👤 Last name: Doe
+  📧 Email address: john.doe@example.com
+  📚 Course interest: Computer Science
 
-Enter marks 1: 85
-Enter marks 2: 90
-Enter marks 3: 78
-Enter marks 4: 
+  ✅ Thank you John Doe!
+  📊 Now enter your marks (press Enter without typing to finish):
 
-==================================================
-Registration Successful!
-Welcome to Ishuri Connect, John Doe!
-Your average marks: 84.33
-==================================================
+  📝 Enter mark #1 (or press Enter to finish): 85
+     ✓ Mark 1: 85.0% added
+  📝 Enter mark #2 (or press Enter to finish): 90
+     ✓ Mark 2: 90.0% added
+  📝 Enter mark #3 (or press Enter to finish): 78
+     ✓ Mark 3: 78.0% added
+  📝 Enter mark #4 (or press Enter to finish):
 
-Searching for schools offering Computer Science...
+  ┌───────────────────────────────────────────────────┐
+  │ ✨ Registration Successful! ✨                    │
+  │ Welcome John Doe!                                 │
+  │ 📊 Your Average: 84.33%                           │
+  └───────────────────────────────────────────────────┘
 
-Found 1 school(s) that match your profile:
+  ┌─────────────────────────────────────────────────────────────────┐
+  │ 🎯  SCHOOL RECOMMENDATIONS FOR COMPUTER SCIENCE                  │
+  └─────────────────────────────────────────────────────────────────┘
 
-1. University of Rwanda
-   Required minimum: 70%
-   Your average: 84.33%
+  🔍 Searching for matching schools...
+
+  ✨ Found 1 school(s) that match your profile!
+
+  ┌────────────────────────────────────────────────────────────┐
+  │ 1. University of Rwanda                                    │
+  │    📌 Required minimum: 70%                                │
+  │    ✅ Your average:     84.33%                             │
+  └────────────────────────────────────────────────────────────┘
+
+  ──────────────────────────────────────────────────────────────────
+  ✨ Thank you for using Ishuri Connect! ✨
+  ──────────────────────────────────────────────────────────────────
 ```
 
 ## Project Structure

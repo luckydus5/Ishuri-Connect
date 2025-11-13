@@ -1,4 +1,5 @@
 import re
+from colorama import Fore, Style
 
 
 def validate_email(email):
@@ -11,18 +12,19 @@ def get_marks():
     marks = []
     i = 1
     while True:
-        user_input = input(f"Enter marks {i}: ").strip()
+        user_input = input(Fore.WHITE + f"  📝 Enter mark #{i} (or press Enter to finish): " + Style.RESET_ALL).strip()
         if user_input == "":
             break
         try:
             mark = float(user_input)
             if 0 <= mark <= 100:
                 marks.append(mark)
+                print(Fore.GREEN + f"     ✓ Mark {i}: {mark}% added" + Style.RESET_ALL)
                 i += 1
             else:
-                print("Please enter a valid mark between 0 and 100.")
+                print(Fore.RED + "     ✗ Please enter a valid mark between 0 and 100." + Style.RESET_ALL)
         except ValueError:
-            print("Invalid input. Please enter a numeric value.")
+            print(Fore.RED + "     ✗ Invalid input. Please enter a numeric value." + Style.RESET_ALL)
     return marks
 
 

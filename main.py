@@ -1,39 +1,47 @@
+"""
+Ishuri-Connect - Main Entry Point
+Demonstrates: Program structure, imports, main function
+"""
 
-from cli import student_registration
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
+from cli_new import start_application
 
 # Initialize colorama for Windows compatibility
 init(autoreset=True)
 
-def print_header():
-    """Print a beautiful header with colors."""
+
+def print_welcome_banner():
+    """Print welcome banner - demonstrates function"""
     print("\n" + Fore.CYAN + "╔" + "═" * 68 + "╗")
-    print(Fore.CYAN + "║" + "" * 68 + "║")
+    print(Fore.CYAN + "║" + " " * 68 + "║")
     print(Fore.CYAN + "║" + Fore.YELLOW + Style.BRIGHT + "        🎓  ISHURI CONNECT - School Matching Platform  🎓" + Fore.CYAN + "        ║")
     print(Fore.CYAN + "║" + " " * 68 + "║")
     print(Fore.CYAN + "╚" + "═" * 68 + "╝" + Style.RESET_ALL)
-
-def print_welcome():
-    """Print welcome message."""
-    print("\n" + Fore.GREEN + "  Welcome! " + Style.RESET_ALL + "This platform helps students find schools")
-    print("  that match their " + Fore.YELLOW + "academic profile" + Style.RESET_ALL + " and " + Fore.YELLOW + "interests" + Style.RESET_ALL + ".")
+    
+    print("\n" + Fore.GREEN + "  Welcome to Ishuri Connect!" + Style.RESET_ALL)
+    print("  " + Fore.WHITE + "Find the perfect school that matches your academic profile." + Style.RESET_ALL)
     print("\n" + Fore.MAGENTA + "  💡 Tip: " + Style.RESET_ALL + "Press " + Fore.RED + "Ctrl+C" + Style.RESET_ALL + " at any time to exit.")
-    print(Fore.CYAN + "\n  " + "─" * 66 + Style.RESET_ALL)
+    print(Fore.CYAN + "  " + "─" * 66 + Style.RESET_ALL)
 
-def print_footer():
-    """Print goodbye footer."""
-    print("\n" + Fore.CYAN + "  " + "─" * 66)
-    print(Fore.GREEN + Style.BRIGHT + "  ✨ Thank you for using Ishuri Connect! ✨" + Style.RESET_ALL)
-    print(Fore.CYAN + "  " + "─" * 66 + "\n" + Style.RESET_ALL)
 
 def main():
-    print_header()
-    print_welcome()
-    student_registration()
-    print_footer()
+    """
+    Main function - entry point
+    Demonstrates: Main program structure, function calls
+    """
+    print_welcome_banner()
+    start_application()
+
 
 if __name__ == "__main__":
+    """
+    Entry point when script is run directly
+    Demonstrates: Python __main__ pattern
+    """
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n" + Fore.YELLOW + "  👋 Goodbye! See you next time.\n" + Style.RESET_ALL)
+        print("\n\n" + Fore.YELLOW + "  👋 Goodbye! Thank you for using Ishuri Connect.\n" + Style.RESET_ALL)
+    except Exception as e:
+        print("\n" + Fore.RED + f"  ❌ An unexpected error occurred: {e}" + Style.RESET_ALL)
+        print(Fore.CYAN + "  💡 Please try again or contact support." + Style.RESET_ALL)

@@ -1,3 +1,4 @@
-mysql-connector-python==9.5.0
-python-dotenv==1.2.1
-colorama==0.4.6
+# Core Dependencies - What we're learning in class
+mysql-connector-python==9.5.0  # MySQL Database operations
+python-dotenv==1.2.1           # Environment variables (.env file)
+colorama==0.4.6                # Colored terminal output

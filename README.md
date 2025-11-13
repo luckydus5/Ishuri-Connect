@@ -65,6 +65,12 @@ A student-school matching platform that helps students find educational institut
 
 ### Run the application
 
+**Easiest way - Double-click:**
+- Windows: Double-click `run.bat`
+- PowerShell: Right-click `run.ps1` → Run with PowerShell
+
+**Or from command line:**
+
 **Windows (Command Prompt):**
 ```cmd
 run.bat
@@ -75,7 +81,7 @@ run.bat
 .\run.ps1
 ```
 
-**Or manually with virtual environment:**
+**With virtual environment (recommended):**
 ```bash
 # Windows
 .\ishuri\Scripts\python.exe main.py
@@ -83,6 +89,8 @@ run.bat
 # Linux/Mac
 ./ishuri/bin/python main.py
 ```
+
+**⚠️ Important:** Don't run `python main.py` directly - it will use your system Python which doesn't have the required packages. Always use the virtual environment or the run scripts!
 
 ### Registration Flow
 

@@ -1,2 +1,4 @@
 # Run Ishuri Connect (PowerShell)
-& D:\Projets\School_Projects\Ishuri-Connect\ishuri\Scripts\python.exe D:\Projets\School_Projects\Ishuri-Connect\main.py
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $ScriptDir
+& .\ishuri\Scripts\python.exe main.py

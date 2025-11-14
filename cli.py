@@ -238,8 +238,15 @@ def register_student(db):
     student_id = db.insert_student(student)
     if student_id:
         print_success(f"✅ Registration successful! Student ID: {student_id}")
+        print(f"  {Fore.CYAN}Welcome {student.get_full_name()}!{Style.RESET_ALL}")
         print_info(f"Aggregate: {student.aggregate_marks}% | Combination: {student.subject_combination}")
         print_info(f"Looking for: {student.desired_program or 'Any program'}")
+        
+        # Automatically show recommendations
+        print("\n" + "─" * 66)
+        get_school_recommendations(db, student)
+        input(f"\n  {Fore.CYAN}Press Enter to continue to your dashboard...{Style.RESET_ALL}")
+        
         return student
     else:
         print_error("Failed to save student")

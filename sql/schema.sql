@@ -1,7 +1,5 @@
 -- sql/schema.sql
 -- Enhanced schema for comprehensive student-school matching
-CREATE DATABASE IF NOT EXISTS ishuri_connect;
-USE ishuri_connect;
 
 CREATE TABLE IF NOT EXISTS students (
   id INT AUTO_INCREMENT PRIMARY KEY,

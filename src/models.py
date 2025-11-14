@@ -42,14 +42,6 @@ class Student:
         """Return full name - demonstrates method"""
         return f"{self.first_name} {self.last_name}"
     
-    def add_mark(self, mark):
-        """Add a mark to the student's marks list"""
-        if 0 <= mark <= 100:
-            self.marks.append(mark)
-            self.average_mark = self.calculate_average()
-            return True
-        return False
-    
     def matches_program(self, program_name):
         """Check if student's desired program matches given program"""
         if not self.desired_program or not program_name:
@@ -160,23 +152,6 @@ class School:
         # Fallback: check in courses list
         return any(program_lower in course.lower() for course in self.courses)
     
-    def has_capacity(self):
-        """Check if school has available capacity"""
-        return self.current_students < self.capacity
-    
-    def offers_course(self, course_name):
-        """Check if school offers a specific course"""
-        return course_name.lower() in [c.lower() for c in self.courses]
-    
-    def get_info(self):
-        """Return school information as tuple"""
-        return (self.name, self.district, self.province, self.min_aggregate, 
-                self.max_cutoff, self.boarding_type)
-    
-    def get_cutoff_range(self):
-        """Return cutoff range as tuple"""
-        return (self.min_cutoff, self.max_cutoff)
-    
     def to_dict(self):
         """Convert school to dictionary"""
         return {
@@ -219,26 +194,6 @@ class Application:
         self.status = status if status else self.STATUS_PENDING
         self.applied_date = applied_date
     
-    def is_pending(self):
-        """Check if application is pending"""
-        return self.status == self.STATUS_PENDING
-    
-    def accept(self):
-        """Accept the application"""
-        self.status = self.STATUS_ACCEPTED
-    
-    def reject(self):
-        """Reject the application"""
-        self.status = self.STATUS_REJECTED
-    
-    def withdraw(self):
-        """Withdraw the application"""
-        self.status = self.STATUS_WITHDRAWN
-    
-    def get_status_info(self):
-        """Return application status as tuple"""
-        return (self.application_id, self.status, self.applied_date)
-    
     def to_dict(self):
         """Convert application to dictionary"""
         return {
@@ -252,14 +207,6 @@ class Application:
     def __str__(self):
         """String representation of application"""
         return f"Application #{self.application_id} - Status: {self.status}"
-
-
-# Utility functions demonstrating function concepts
-def validate_email(email):
-    """Validate email format - demonstrates function with return value"""
-    if '@' in email and '.' in email.split('@')[1]:
-        return True
-    return False
 
 
 def calculate_match_score(student, school, program=None):

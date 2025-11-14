@@ -329,59 +329,39 @@ def get_school_recommendations(db, student):
     print(f"  Desired Program: {student.desired_program or 'Any'}")
     print(f"  Preferred Location: {student.preferred_location or 'Any'}")
     
-    # Use advanced matching
-    schools = db.advanced_match_search(student)
+    # Get ALL schools that accept the student's marks (ignore location/combination)
+    schools = db.get_schools_by_min_mark(student.aggregate_marks)
     
     if not schools:
-        print_error(f"No schools match your profile (Aggregate: {student.aggregate_marks}%, Combination: {student.subject_combination})")
-        print_info("Try lowering your location preference or checking your marks")
+        print_error(f"No schools accept your aggregate of {student.aggregate_marks}%")
+        print_info("The minimum cutoff in our database may be higher than your marks")
         return
     
-    # Sort by comprehensive match score
-    from models import sort_schools_by_match
-    matches = sort_schools_by_match(schools, student)
+    print(f"\n  {Fore.GREEN}✨ Found {len(schools)} schools that accept your marks:{Style.RESET_ALL}\n")
     
-    if not matches:
-        print_info("No matching schools found")
-        return
-    
-    print(f"\n  {Fore.GREEN}✨ Found {len(matches)} matching schools (sorted by best match):{Style.RESET_ALL}\n")
-    
-    # Display recommendations with scores and reasons
-    for i, (school, score, details) in enumerate(matches[:10], 1):  # Tuple unpacking - top 10
-        # Color code by match quality
-        if score >= 80:
-            score_color = Fore.GREEN
+    # Display all matching schools sorted by cutoff (highest to lowest)
+    for i, school in enumerate(schools[:15], 1):  # Show top 15
+        # Color code by how much above cutoff the student is
+        marks_above = student.aggregate_marks - school.min_cutoff
+        if marks_above >= 15:
             badge = "🌟 Excellent Match"
-        elif score >= 60:
-            score_color = Fore.YELLOW
+            color = Fore.GREEN
+        elif marks_above >= 5:
             badge = "✅ Good Match"
+            color = Fore.YELLOW
         else:
-            score_color = Fore.WHITE
-            badge = "📊 Possible Match"
+            badge = "📊 Possible"
+            color = Fore.WHITE
         
         print(f"  {Fore.CYAN}┌{'─' * 70}┐{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}" + " " * (68 - len(school.name)) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {score_color}{badge} - Match Score: {score}%{Style.RESET_ALL}" + " " * (68 - len(f"    {badge} - Match Score: {score}%")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%" + " " * (68 - len(f"    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%")) + f" {Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs | 📧 {school.contact_email or 'N/A'}" + " " * (68 - len(f"    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs | 📧 {school.contact_email or 'N/A'}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        
-        # Show match reasons
-        reasons = []
-        if details.get('marks_qualified'):
-            reasons.append(f"✓ Marks qualify")
-        if details.get('program_offered'):
-            reasons.append(f"✓ Offers {student.desired_program}")
-        if details.get('combination_accepted'):
-            reasons.append(f"✓ Accepts {student.subject_combination}")
-        
-        if reasons:
-            reasons_text = " | ".join(reasons)
-            print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {Fore.GREEN}{reasons_text}{Style.RESET_ALL}" + " " * (68 - len(f"    {reasons_text}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}" + " " * (68 - len(school.name) - len(str(i)) - 3) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {color}{badge}{Style.RESET_ALL} - Your marks: {student.aggregate_marks}% (Min required: {school.min_cutoff}%)" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs" + " " * (30) + f"{Fore.CYAN}│{Style.RESET_ALL}")
         print(f"  {Fore.CYAN}└{'─' * 70}┘{Style.RESET_ALL}\n")
     
-    return matches
+    print(f"\n  {Fore.GREEN}✨ All schools listed accept your aggregate of {student.aggregate_marks}%!{Style.RESET_ALL}")
+    print(f"  {Fore.CYAN}💡 Tip: Higher cutoffs = more competitive programs{Style.RESET_ALL}\n")
 
 
 # ==================== APPLICATION FUNCTIONS ====================

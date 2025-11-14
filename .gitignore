@@ -29,6 +29,8 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+*.sql.backup
+**/sql/backup/
 
 # Logs
 *.log
@@ -36,3 +38,7 @@ Thumbs.db
 # Run scripts (local use only)
 run.bat
 run.ps1
+
+# Database dumps
+*.dump
+*.backup.sql

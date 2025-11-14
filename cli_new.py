@@ -76,16 +76,100 @@ def get_marks_input():
     return marks
 
 
+def get_subject_combination():
+    """
+    Get student's subject combination with menu
+    Demonstrates: dictionary for menu, lists, user input
+    """
+    combinations = {
+        "1": ("PCM", "Physics-Chemistry-Mathematics"),
+        "2": ("PCB", "Physics-Chemistry-Biology"),
+        "3": ("MEG", "Mathematics-Economics-Geography"),
+        "4": ("HEG", "History-Economics-Geography"),
+        "5": ("LKE", "Literature-Kinyarwanda-English"),
+        "6": ("MCB", "Mathematics-Chemistry-Biology"),
+        "7": ("BCG", "Biology-Chemistry-Geography"),
+        "8": ("PEM", "Physics-Economics-Mathematics"),
+        "9": ("OTHER", "Other Combination")
+    }
+    
+    print(Fore.CYAN + "\n  📚 Select your subject combination:\n" + Style.RESET_ALL)
+    for key, (code, name) in combinations.items():
+        print(f"  {Fore.YELLOW}{key}.{Style.RESET_ALL} {code} - {name}")
+    
+    choice = input(Fore.WHITE + "\n  Your choice: " + Style.RESET_ALL).strip()
+    
+    if choice in combinations:
+        return combinations[choice][0]
+    elif choice == "9":
+        custom = input(Fore.WHITE + "  Enter your combination (e.g., PCM): " + Style.RESET_ALL).strip().upper()
+        return custom if custom else "OTHER"
+    return "PCM"  # Default
+
+
+def get_district_choice():
+    """
+    Get student's district/province with organized menu
+    Demonstrates: nested dictionaries, complex data structures
+    """
+    districts = {
+        "Kigali": ["Kigali City", "Gasabo", "Kicukiro", "Nyarugenge"],
+        "Northern": ["Musanze", "Gicumbi", "Burera", "Gakenke", "Rulindo"],
+        "Southern": ["Huye", "Nyanza", "Muhanga", "Ruhango", "Nyamagabe", "Nyaruguru", "Gisagara", "Kamonyi"],
+        "Eastern": ["Rwamagana", "Nyagatare", "Gatsibo", "Kayonza", "Kirehe", "Ngoma", "Bugesera"],
+        "Western": ["Rubavu", "Rusizi", "Nyamasheke", "Karongi", "Rutsiro", "Ngororero", "Nyabihu"]
+    }
+    
+    print(Fore.CYAN + "\n  🌍 Select your province first:\n" + Style.RESET_ALL)
+    provinces = list(districts.keys())
+    for i, province in enumerate(provinces, 1):
+        print(f"  {Fore.YELLOW}{i}.{Style.RESET_ALL} {province}")
+    
+    try:
+        province_choice = int(input(Fore.WHITE + "\n  Province: " + Style.RESET_ALL).strip())
+        if 1 <= province_choice <= len(provinces):
+            selected_province = provinces[province_choice - 1]
+            
+            print(Fore.CYAN + f"\n  📍 Select district in {selected_province}:\n" + Style.RESET_ALL)
+            district_list = districts[selected_province]
+            for i, district in enumerate(district_list, 1):
+                print(f"  {Fore.YELLOW}{i}.{Style.RESET_ALL} {district}")
+            
+            district_choice = int(input(Fore.WHITE + "\n  District: " + Style.RESET_ALL).strip())
+            if 1 <= district_choice <= len(district_list):
+                return (district_list[district_choice - 1], selected_province)
+    except:
+        pass
+    
+    return ("Kigali City", "Kigali")  # Default
+
+
+def get_boarding_preference():
+    """Get student's boarding preference"""
+    print(Fore.CYAN + "\n  🏠 Boarding preference:\n" + Style.RESET_ALL)
+    print(f"  {Fore.YELLOW}1.{Style.RESET_ALL} Boarding (Live on campus)")
+    print(f"  {Fore.YELLOW}2.{Style.RESET_ALL} Day (Commute daily)")
+    print(f"  {Fore.YELLOW}3.{Style.RESET_ALL} No preference")
+    
+    choice = input(Fore.WHITE + "\n  Your choice: " + Style.RESET_ALL).strip()
+    
+    if choice == "1":
+        return "boarding"
+    elif choice == "2":
+        return "day"
+    return "no_preference"
+
+
 # ==================== STUDENT FUNCTIONS ====================
 
 def register_student(db):
     """
-    Register a new student
+    Register a new student with comprehensive profile
     Demonstrates: Object creation, database INSERT, function with return
     """
-    print_header("📝  STUDENT REGISTRATION")
+    print_header("📝  COMPREHENSIVE STUDENT REGISTRATION")
     
-    # Get student information
+    # Basic information
     first_name = input("\n  👤 First name: ").strip()
     if not first_name:
         print_error("First name is required")
@@ -107,20 +191,66 @@ def register_student(db):
         print_error("Email already registered")
         return existing
     
-    # Get marks
+    # Previous education
+    secondary_school = input("  🏫 Secondary school attended: ").strip()
+    
+    # Get marks for aggregate calculation
     marks = get_marks_input()
     if not marks:
         print_error("At least one mark is required")
         return None
     
-    # Create Student object (OOP)
-    student = Student(first_name, last_name, email, marks)
+    # Calculate aggregate (can be different from average)
+    aggregate_input = input(f"  📊 Aggregate marks (press Enter for calculated {round(sum(marks)/len(marks), 2)}): ").strip()
+    if aggregate_input:
+        try:
+            aggregate_marks = float(aggregate_input)
+        except:
+            aggregate_marks = round(sum(marks)/len(marks), 2)
+    else:
+        aggregate_marks = round(sum(marks)/len(marks), 2)
+    
+    # Subject combination
+    subject_combination = get_subject_combination()
+    print_success(f"Selected: {subject_combination}")
+    
+    # Location information
+    print(Fore.CYAN + "\n  🌍 Where are you from?" + Style.RESET_ALL)
+    location_from, province_from = get_district_choice()
+    print_success(f"From: {location_from}, {province_from}")
+    
+    print(Fore.CYAN + "\n  🎯 Where would you like to study?" + Style.RESET_ALL)
+    preferred_location, preferred_province = get_district_choice()
+    print_success(f"Preferred: {preferred_location}, {preferred_province}")
+    
+    # Program interest
+    desired_program = input("\n  🎓 What do you want to study (e.g., Computer Science, Medicine): ").strip()
+    
+    # Boarding preference
+    preferred_boarding = get_boarding_preference()
+    print_success(f"Boarding preference: {preferred_boarding}")
+    
+    # Create comprehensive Student object (OOP)
+    student = Student(
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        marks=marks,
+        secondary_school=secondary_school,
+        aggregate_marks=aggregate_marks,
+        subject_combination=subject_combination,
+        location_from=location_from,
+        preferred_location=preferred_location,
+        desired_program=desired_program,
+        preferred_boarding=preferred_boarding
+    )
     
     # Save to database
     student_id = db.insert_student(student)
     if student_id:
-        print_success(f"Registration successful! Student ID: {student_id}")
-        print_info(f"Average mark: {student.average_mark}%")
+        print_success(f"✅ Registration successful! Student ID: {student_id}")
+        print_info(f"Aggregate: {student.aggregate_marks}% | Combination: {student.subject_combination}")
+        print_info(f"Looking for: {student.desired_program or 'Any program'}")
         return student
     else:
         print_error("Failed to save student")
@@ -129,15 +259,31 @@ def register_student(db):
 
 def view_student_profile(db, student):
     """
-    Display student profile
+    Display comprehensive student profile
     Demonstrates: Object methods, string formatting
     """
     print_header("👤  STUDENT PROFILE")
     
     print(f"\n  {Fore.CYAN}Name:{Style.RESET_ALL} {student.get_full_name()}")  # Using method
     print(f"  {Fore.CYAN}Email:{Style.RESET_ALL} {student.email}")
-    print(f"  {Fore.CYAN}Average Mark:{Style.RESET_ALL} {student.average_mark}%")
-    print(f"  {Fore.CYAN}Total Marks:{Style.RESET_ALL} {len(student.marks)}")  # Using list
+    print(f"  {Fore.CYAN}Student ID:{Style.RESET_ALL} {student.student_id}")
+    print(f"  {Fore.CYAN}Aggregate:{Style.RESET_ALL} {student.aggregate_marks}%")
+    
+    # Educational background
+    if student.secondary_school:
+        print(f"\n  {Fore.YELLOW}Education:{Style.RESET_ALL}")
+        print(f"    Secondary School: {student.secondary_school}")
+        print(f"    Combination: {student.subject_combination}")
+    
+    # Location & preferences
+    print(f"\n  {Fore.YELLOW}Preferences:{Style.RESET_ALL}")
+    if student.location_from:
+        print(f"    From: {student.location_from}")
+    if student.preferred_location:
+        print(f"    Wants to study in: {student.preferred_location}")
+    if student.desired_program:
+        print(f"    Desired program: {student.desired_program}")
+    print(f"    Boarding: {student.preferred_boarding}")
     
     # Display marks if available
     if student.marks:
@@ -165,9 +311,10 @@ def view_all_schools(db):
     
     for i, school in enumerate(schools, 1):  # List enumeration
         print(f"  {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}")
-        print(f"     📍 District: {school.district}")
-        print(f"     📊 Minimum: {school.min_aggregate}%")
-        print(f"     🏠 Type: {school.boarding_type}")
+        print(f"     📍 Location: {school.district}, {school.province}")
+        print(f"     📊 Cutoff Range: {school.min_cutoff}% - {school.max_cutoff}%")
+        print(f"     🏠 Boarding: {school.boarding_type}")
+        print(f"     📚 Programs: {len(school.programs)}")
         print()
     
     return schools
@@ -175,39 +322,68 @@ def view_all_schools(db):
 
 def get_school_recommendations(db, student):
     """
-    Get personalized school recommendations
-    Demonstrates: Complex logic, sorting, tuple usage
+    Get intelligent personalized school recommendations
+    Demonstrates: Complex logic, sorting, tuple usage, multi-criteria matching
     """
-    print_header("🎯  PERSONALIZED RECOMMENDATIONS")
+    print_header("🎯  INTELLIGENT SCHOOL MATCHING")
     
-    # Get course interest
-    course = input("\n  📚 Enter your course interest: ").strip()
-    if not course:
-        print_error("Course is required")
-        return
+    print(f"\n  {Fore.CYAN}Your Profile:{Style.RESET_ALL}")
+    print(f"  Aggregate: {student.aggregate_marks}%")
+    print(f"  Combination: {student.subject_combination}")
+    print(f"  Desired Program: {student.desired_program or 'Any'}")
+    print(f"  Preferred Location: {student.preferred_location or 'Any'}")
     
-    # Get all qualifying schools
-    schools = db.get_schools_by_min_mark(student.average_mark)
+    # Use advanced matching
+    schools = db.advanced_match_search(student)
     
     if not schools:
-        print_error(f"No schools accept average of {student.average_mark}%")
+        print_error(f"No schools match your profile (Aggregate: {student.aggregate_marks}%, Combination: {student.subject_combination})")
+        print_info("Try lowering your location preference or checking your marks")
         return
     
-    # Sort by match score
-    matches = sort_schools_by_match(schools, student.average_mark, course)
+    # Sort by comprehensive match score
+    from models import sort_schools_by_match
+    matches = sort_schools_by_match(schools, student)
     
     if not matches:
         print_info("No matching schools found")
         return
     
-    print(f"\n  {Fore.GREEN}✨ Found {len(matches)} matching schools!{Style.RESET_ALL}\n")
+    print(f"\n  {Fore.GREEN}✨ Found {len(matches)} matching schools (sorted by best match):{Style.RESET_ALL}\n")
     
-    # Display recommendations with scores
-    for i, (school, score) in enumerate(matches, 1):  # Tuple unpacking
-        print(f"  {Fore.CYAN}┌{'─' * 62}┐{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}" + " " * (60 - len(school.name)) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district} | 📊 Min: {school.min_aggregate}% | 🎯 Match: {score}%" + " " * (60 - len(f"    📍 {school.district} | 📊 Min: {school.min_aggregate}% | 🎯 Match: {score}%")) + f" {Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}└{'─' * 62}┘{Style.RESET_ALL}\n")
+    # Display recommendations with scores and reasons
+    for i, (school, score, details) in enumerate(matches[:10], 1):  # Tuple unpacking - top 10
+        # Color code by match quality
+        if score >= 80:
+            score_color = Fore.GREEN
+            badge = "🌟 Excellent Match"
+        elif score >= 60:
+            score_color = Fore.YELLOW
+            badge = "✅ Good Match"
+        else:
+            score_color = Fore.WHITE
+            badge = "📊 Possible Match"
+        
+        print(f"  {Fore.CYAN}┌{'─' * 70}┐{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}" + " " * (68 - len(school.name)) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {score_color}{badge} - Match Score: {score}%{Style.RESET_ALL}" + " " * (68 - len(f"    {badge} - Match Score: {score}%")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%" + " " * (68 - len(f"    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%")) + f" {Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs | 📧 {school.contact_email or 'N/A'}" + " " * (68 - len(f"    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs | 📧 {school.contact_email or 'N/A'}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        
+        # Show match reasons
+        reasons = []
+        if details.get('marks_qualified'):
+            reasons.append(f"✓ Marks qualify")
+        if details.get('program_offered'):
+            reasons.append(f"✓ Offers {student.desired_program}")
+        if details.get('combination_accepted'):
+            reasons.append(f"✓ Accepts {student.subject_combination}")
+        
+        if reasons:
+            reasons_text = " | ".join(reasons)
+            print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {Fore.GREEN}{reasons_text}{Style.RESET_ALL}" + " " * (68 - len(f"    {reasons_text}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        
+        print(f"  {Fore.CYAN}└{'─' * 70}┘{Style.RESET_ALL}\n")
     
     return matches
 

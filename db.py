@@ -86,15 +86,22 @@ class Database:
     
     def insert_student(self, student):
         """
-        Insert a new student into database
+        Insert a new student into database with comprehensive profile
         Demonstrates: INSERT operation, using object attributes
         """
         query = """
-        INSERT INTO students (first_name, last_name, email, average_mark)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO students (first_name, last_name, email, average_mark, aggregate_marks,
+                             secondary_school, subject_combination, location_from, 
+                             preferred_location, desired_program, preferred_boarding)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        params = (student.first_name, student.last_name, 
-                 student.email, student.average_mark)
+        params = (
+            student.first_name, student.last_name, student.email, 
+            student.average_mark, student.aggregate_marks,
+            student.secondary_school, student.subject_combination,
+            student.location_from, student.preferred_location,
+            student.desired_program, student.preferred_boarding
+        )
         
         student_id = self.execute_query(query, params)
         if student_id:
@@ -116,7 +123,14 @@ class Database:
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 email=data['email'],
-                student_id=data['id']
+                student_id=data['id'],
+                secondary_school=data.get('secondary_school'),
+                aggregate_marks=float(data.get('aggregate_marks', 0)),
+                subject_combination=data.get('subject_combination'),
+                location_from=data.get('location_from'),
+                preferred_location=data.get('preferred_location'),
+                desired_program=data.get('desired_program'),
+                preferred_boarding=data.get('preferred_boarding', 'no_preference')
             )
         return None
     
@@ -131,7 +145,14 @@ class Database:
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 email=data['email'],
-                student_id=data['id']
+                student_id=data['id'],
+                secondary_school=data.get('secondary_school'),
+                aggregate_marks=float(data.get('aggregate_marks', 0)),
+                subject_combination=data.get('subject_combination'),
+                location_from=data.get('location_from'),
+                preferred_location=data.get('preferred_location'),
+                desired_program=data.get('desired_program'),
+                preferred_boarding=data.get('preferred_boarding', 'no_preference')
             )
         return None
     
@@ -140,7 +161,7 @@ class Database:
         Get all students - demonstrates fetching multiple records
         Returns: list of Student objects
         """
-        query = "SELECT * FROM students ORDER BY average_mark DESC"
+        query = "SELECT * FROM students ORDER BY aggregate_marks DESC"
         results = self.fetch_query(query)
         
         students = []  # Using list
@@ -149,7 +170,14 @@ class Database:
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 email=data['email'],
-                student_id=data['id']
+                student_id=data['id'],
+                secondary_school=data.get('secondary_school'),
+                aggregate_marks=float(data.get('aggregate_marks', 0)),
+                subject_combination=data.get('subject_combination'),
+                location_from=data.get('location_from'),
+                preferred_location=data.get('preferred_location'),
+                desired_program=data.get('desired_program'),
+                preferred_boarding=data.get('preferred_boarding', 'no_preference')
             )
             students.append(student)
         
@@ -174,13 +202,24 @@ class Database:
     # ==================== SCHOOL OPERATIONS ====================
     
     def insert_school(self, school):
-        """Insert a new school"""
+        """Insert a new school with comprehensive data"""
         query = """
-        INSERT INTO schools (name, district, boarding, min_aggregate, contact_email)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO schools (name, district, province, school_type, boarding, 
+                           min_aggregate, min_cutoff, max_cutoff, required_subjects,
+                           competencies_needed, contact_email, website)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        params = (school.name, school.district, school.boarding_type,
-                 school.min_aggregate, school.contact_email)
+        
+        # Convert lists to comma-separated strings
+        required_subj = ','.join(school.required_subjects) if school.required_subjects else None
+        competencies = ','.join(school.competencies_needed) if school.competencies_needed else None
+        
+        params = (
+            school.name, school.district, school.province, school.school_type,
+            school.boarding_type, school.min_aggregate, school.min_cutoff, 
+            school.max_cutoff, required_subj, competencies,
+            school.contact_email, school.website
+        )
         
         school_id = self.execute_query(query, params)
         if school_id:
@@ -189,26 +228,42 @@ class Database:
         return None
     
     def get_school_by_id(self, school_id):
-        """Get school by ID"""
+        """Get school by ID with all details"""
         query = "SELECT * FROM schools WHERE id = %s"
         results = self.fetch_query(query, (school_id,))
         
         if results:
             data = results[0]
-            return School(
+            
+            # Parse comma-separated strings to lists
+            required_subj = data.get('required_subjects', '').split(',') if data.get('required_subjects') else []
+            competencies = data.get('competencies_needed', '').split(',') if data.get('competencies_needed') else []
+            
+            school = School(
                 name=data['name'],
-                district=data['district'],
-                courses=["General"],  # Will enhance later
+                district=data.get('district'),
+                province=data.get('province'),
+                school_type=data.get('school_type', 'private'),
                 min_aggregate=float(data['min_aggregate']),
-                boarding_type=data['boarding'],
-                contact_email=data['contact_email'],
+                min_cutoff=float(data.get('min_cutoff', data['min_aggregate'])),
+                max_cutoff=float(data.get('max_cutoff', data['min_aggregate'])),
+                boarding_type=data.get('boarding', 'day'),
+                required_subjects=required_subj,
+                competencies_needed=competencies,
+                contact_email=data.get('contact_email'),
+                website=data.get('website'),
                 school_id=data['id']
             )
+            
+            # Load programs for this school
+            school.programs = self.get_programs_by_school(school_id)
+            
+            return school
         return None
     
     def get_all_schools(self):
         """
-        Get all schools
+        Get all schools with comprehensive data
         Returns: list of School objects
         """
         query = "SELECT * FROM schools ORDER BY name"
@@ -216,41 +271,110 @@ class Database:
         
         schools = []
         for data in results:
+            # Parse comma-separated strings to lists
+            required_subj = data.get('required_subjects', '').split(',') if data.get('required_subjects') else []
+            competencies = data.get('competencies_needed', '').split(',') if data.get('competencies_needed') else []
+            
             school = School(
                 name=data['name'],
-                district=data['district'],
-                courses=["General"],
+                district=data.get('district'),
+                province=data.get('province'),
+                school_type=data.get('school_type', 'private'),
                 min_aggregate=float(data['min_aggregate']),
-                boarding_type=data['boarding'],
-                contact_email=data['contact_email'],
+                min_cutoff=float(data.get('min_cutoff', data['min_aggregate'])),
+                max_cutoff=float(data.get('max_cutoff', data['min_aggregate'])),
+                boarding_type=data.get('boarding', 'day'),
+                required_subjects=required_subj,
+                competencies_needed=competencies,
+                contact_email=data.get('contact_email'),
+                website=data.get('website'),
                 school_id=data['id']
             )
+            
+            # Load programs for this school
+            school.programs = self.get_programs_by_school(data['id'])
+            
             schools.append(school)
         
         return schools
     
     def get_schools_by_min_mark(self, min_mark):
         """
-        Get schools accepting students with specific marks
+        Get schools accepting students with specific aggregate marks
         Demonstrates: WHERE clause with comparison
         """
-        query = "SELECT * FROM schools WHERE min_aggregate <= %s ORDER BY min_aggregate DESC"
+        query = "SELECT * FROM schools WHERE min_cutoff <= %s ORDER BY min_cutoff DESC"
         results = self.fetch_query(query, (min_mark,))
         
         schools = []
         for data in results:
+            required_subj = data.get('required_subjects', '').split(',') if data.get('required_subjects') else []
+            competencies = data.get('competencies_needed', '').split(',') if data.get('competencies_needed') else []
+            
             school = School(
                 name=data['name'],
-                district=data['district'],
-                courses=["General"],
+                district=data.get('district'),
+                province=data.get('province'),
+                school_type=data.get('school_type', 'private'),
                 min_aggregate=float(data['min_aggregate']),
-                boarding_type=data['boarding'],
-                contact_email=data['contact_email'],
+                min_cutoff=float(data.get('min_cutoff', data['min_aggregate'])),
+                max_cutoff=float(data.get('max_cutoff', data['min_aggregate'])),
+                boarding_type=data.get('boarding', 'day'),
+                required_subjects=required_subj,
+                competencies_needed=competencies,
+                contact_email=data.get('contact_email'),
+                website=data.get('website'),
                 school_id=data['id']
             )
+            school.programs = self.get_programs_by_school(data['id'])
             schools.append(school)
         
         return schools
+    
+    # ==================== PROGRAM OPERATIONS ====================
+    
+    def insert_program(self, program_data):
+        """Insert a new program for a school"""
+        query = """
+        INSERT INTO programs (school_id, program_name, program_code, cutoff_marks,
+                            required_combination, duration_years, fees_range, description)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        params = (
+            program_data.get('school_id'),
+            program_data.get('program_name'),
+            program_data.get('program_code'),
+            program_data.get('cutoff_marks'),
+            program_data.get('required_combination'),
+            program_data.get('duration_years', 4),
+            program_data.get('fees_range'),
+            program_data.get('description')
+        )
+        return self.execute_query(query, params)
+    
+    def get_programs_by_school(self, school_id):
+        """Get all programs offered by a specific school"""
+        query = "SELECT * FROM programs WHERE school_id = %s ORDER BY cutoff_marks DESC"
+        results = self.fetch_query(query, (school_id,))
+        return results if results else []
+    
+    def get_program_by_id(self, program_id):
+        """Get a specific program by ID"""
+        query = "SELECT * FROM programs WHERE id = %s"
+        results = self.fetch_query(query, (program_id,))
+        return results[0] if results else None
+    
+    def search_programs_by_name(self, program_name):
+        """Search programs by name across all schools"""
+        query = """
+        SELECT p.*, s.name as school_name 
+        FROM programs p
+        JOIN schools s ON p.school_id = s.id
+        WHERE p.program_name LIKE %s
+        ORDER BY p.cutoff_marks
+        """
+        search_term = f"%{program_name}%"
+        return self.fetch_query(query, (search_term,))
     
     # ==================== APPLICATION OPERATIONS ====================
     
@@ -364,6 +488,52 @@ class Database:
         stats['pending_applications'] = result[0]['count'] if result else 0
         
         return stats
+    
+    def advanced_match_search(self, student):
+        """
+        Advanced school search based on multiple criteria
+        Demonstrates: Complex WHERE clauses, multiple conditions, JOIN
+        Returns: list of matching schools
+        """
+        query = """
+        SELECT DISTINCT s.* 
+        FROM schools s
+        WHERE s.min_cutoff <= %s
+        AND (
+            s.required_subjects IS NULL 
+            OR s.required_subjects = '' 
+            OR FIND_IN_SET(%s, s.required_subjects) > 0
+        )
+        ORDER BY s.min_cutoff DESC
+        """
+        
+        params = (student.aggregate_marks, student.subject_combination)
+        results = self.fetch_query(query, params)
+        
+        schools = []
+        for data in results:
+            required_subj = data.get('required_subjects', '').split(',') if data.get('required_subjects') else []
+            competencies = data.get('competencies_needed', '').split(',') if data.get('competencies_needed') else []
+            
+            school = School(
+                name=data['name'],
+                district=data.get('district'),
+                province=data.get('province'),
+                school_type=data.get('school_type', 'private'),
+                min_aggregate=float(data['min_aggregate']),
+                min_cutoff=float(data.get('min_cutoff', data['min_aggregate'])),
+                max_cutoff=float(data.get('max_cutoff', data['min_aggregate'])),
+                boarding_type=data.get('boarding', 'day'),
+                required_subjects=required_subj,
+                competencies_needed=competencies,
+                contact_email=data.get('contact_email'),
+                website=data.get('website'),
+                school_id=data['id']
+            )
+            school.programs = self.get_programs_by_school(data['id'])
+            schools.append(school)
+        
+        return schools
 
 
 # Standalone utility functions

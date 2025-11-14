@@ -5,7 +5,7 @@ Demonstrates: Program structure, imports, main function, database setup
 """
 
 from colorama import init, Fore, Style
-from cli_new import start_application
+from cli import start_application
 import mysql.connector
 import os
 from dotenv import load_dotenv

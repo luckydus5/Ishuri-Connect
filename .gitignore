@@ -21,6 +21,9 @@ ENV/
 *.swo
 *~
 
+# Spell checker (keep local configuration)
+cspell.json
+
 # OS
 .DS_Store
 Thumbs.db

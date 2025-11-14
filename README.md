@@ -217,9 +217,6 @@ For remote team collaboration, use a cloud MySQL provider:
 - ✅ Industry-standard, database branching
 - Setup: Create database → Get connection string → Update `.env`
 
-#### **4. Clever Cloud** (FREE - 256MB)
-- Website: https://www.clever-cloud.com/
-- ✅ European-based, GDPR compliant
 
 #### **5. Aiven** (FREE Trial - 30 days)
 - Website: https://aiven.io/

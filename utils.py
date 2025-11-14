@@ -12,7 +12,7 @@ def get_marks():
     marks = []
     i = 1
     while True:
-        user_input = input(Fore.WHITE + f"  📝 Enter mark #{i} (or press Enter to finish): " + Style.RESET_ALL).strip()
+        user_input = input(Fore.WHITE + f"  📝 Enter mark #{i}: " + Style.RESET_ALL).strip()
         if user_input == "":
             break
         try:

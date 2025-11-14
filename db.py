@@ -5,6 +5,7 @@ Demonstrates: MySQL connections, CRUD operations, Functions, Error handling
 
 import mysql.connector
 from mysql.connector import Error
+from typing import Optional, List, Dict, Any
 import os
 from dotenv import load_dotenv
 from models import Student, School, Application
@@ -22,7 +23,7 @@ class Database:
         self.user = os.getenv('DB_USER', 'root')
         self.password = os.getenv('DB_PASSWORD', '')
         self.database = os.getenv('DB_NAME', 'ishuri_connect')
-        self.connection = None
+        self.connection: Optional[Any] = None
     
     def connect(self):
         """Establish database connection - demonstrates function"""
@@ -63,24 +64,27 @@ class Database:
         finally:
             cursor.close()
     
-    def fetch_query(self, query, params=None):
+    def fetch_query(self, query, params=None) -> List[Dict[str, Any]]:
         """
         Fetch data from database
         Demonstrates: function returning lists/tuples
         """
         try:
+            if self.connection is None:
+                return []
             cursor = self.connection.cursor(dictionary=True)
             if params:
                 cursor.execute(query, params)
             else:
                 cursor.execute(query)
             results = cursor.fetchall()  # Returns list of dictionaries
-            return results
+            return results  # type: ignore
         except Error as e:
             print(f"Error fetching data: {e}")
             return []
         finally:
-            cursor.close()
+            if 'cursor' in locals():
+                cursor.close()
     
     # ==================== STUDENT OPERATIONS ====================
     

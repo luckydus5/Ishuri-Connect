@@ -28,7 +28,7 @@ def check_and_setup_database():
     DB_NAME = os.getenv('DB_NAME', 'ishuri_connect')
     
     try:
-        # Check if database exists
+        # Check if database and tables exist
         conn = mysql.connector.connect(
             host=DB_HOST,
             user=DB_USER,
@@ -38,8 +38,18 @@ def check_and_setup_database():
         cursor.execute(f"SHOW DATABASES LIKE '{DB_NAME}'")
         db_exists = cursor.fetchone() is not None
         
-        if not db_exists:
-            print(f"\n{Fore.YELLOW}⚙️  First time setup: Creating database...{Style.RESET_ALL}")
+        # Check if tables exist
+        tables_exist = False
+        if db_exists:
+            cursor.execute(f"USE {DB_NAME}")
+            cursor.execute("SHOW TABLES LIKE 'students'")
+            students_table = cursor.fetchone() is not None
+            cursor.execute("SHOW TABLES LIKE 'applications'")
+            applications_table = cursor.fetchone() is not None
+            tables_exist = students_table and applications_table
+        
+        if not db_exists or not tables_exist:
+            print(f"\n{Fore.YELLOW}⚙️  First time setup: Creating database and tables...{Style.RESET_ALL}")
             
             # Read and execute schema
             with open('sql/schema.sql', 'r', encoding='utf-8') as f:

@@ -22,25 +22,18 @@ def print_header(title):
 
 
 def print_success(message):
-    """Print success message"""
     print(Fore.GREEN + "  ✅ " + message + Style.RESET_ALL)
 
 
 def print_error(message):
-    """Print error message"""
     print(Fore.RED + "  ❌ " + message + Style.RESET_ALL)
 
 
 def print_info(message):
-    """Print info message"""
     print(Fore.CYAN + "  ℹ️  " + message + Style.RESET_ALL)
 
 
 def print_menu(title, options):
-    """
-    Print menu with options
-    Demonstrates: function with list parameter
-    """
     print_header(title)
     print()
     for key, value in options.items():  # Using dictionary
@@ -49,10 +42,6 @@ def print_menu(title, options):
 
 
 def get_marks_input():
-    """
-    Get marks from user
-    Demonstrates: list operations, while loop, input validation
-    """
     marks = []  # Using list
     print(Fore.CYAN + "\n  📊 Enter your marks (press Enter to finish):\n" + Style.RESET_ALL)
     
@@ -558,7 +547,7 @@ def main_menu(db):
     Demonstrates: Menu system, while loop, function organization
     """
     menu_options = {
-        "1": "Register New Student",
+        "1": "Signup Student",
         "2": "Login (Existing Student)",
         "3": "View All Schools",
         "4": "View Statistics",

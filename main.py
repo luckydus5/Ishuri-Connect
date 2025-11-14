@@ -55,19 +55,17 @@ def check_and_setup_database():
             with open('sql/schema.sql', 'r', encoding='utf-8') as f:
                 schema = f.read()
             
-            statements = schema.split(';')
-            for statement in statements:
-                if statement.strip():
-                    try:
-                        cursor.execute(statement)
-                    except mysql.connector.Error as err:
-                        if 'already exists' not in str(err).lower():
-                            pass  # Ignore minor errors
-            
-            conn.commit()
-            print(f"{Fore.GREEN}✓ Database setup complete!{Style.RESET_ALL}")
-            print(f"{Fore.GREEN}  - 10 universities loaded{Style.RESET_ALL}")
-            print(f"{Fore.GREEN}  - 30+ programs available{Style.RESET_ALL}\n")
+            # Execute entire schema at once
+            try:
+                for result in cursor.execute(schema, multi=True):
+                    pass  # Consume all results
+                conn.commit()
+                print(f"{Fore.GREEN}✓ Database setup complete!{Style.RESET_ALL}")
+                print(f"{Fore.GREEN}  - 10 universities loaded{Style.RESET_ALL}")
+                print(f"{Fore.GREEN}  - 30+ programs available{Style.RESET_ALL}\n")
+            except mysql.connector.Error as err:
+                print(f"{Fore.RED}Setup error: {err}{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}Continuing anyway...{Style.RESET_ALL}\n")
         
         cursor.close()
         conn.close()

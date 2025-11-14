@@ -4,9 +4,9 @@ Demonstrates: Functions, Menu systems, User interaction, Lists, Dictionaries
 """
 
 from colorama import Fore, Style, init
-from utils import validate_email
-from models import Student, School, Application, sort_schools_by_match
-from db import Database
+from src.utils import validate_email
+from src.models import Student, School, Application, sort_schools_by_match
+from database.db import Database
 
 # Initialize colorama
 init(autoreset=True)

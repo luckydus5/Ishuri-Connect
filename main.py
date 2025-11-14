@@ -5,7 +5,7 @@ Demonstrates: Program structure, imports, main function, database setup
 """
 
 from colorama import init, Fore, Style
-from cli import start_application
+from src.cli import start_application
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -45,7 +45,7 @@ def check_and_setup_database():
         
         if not students_table or not applications_table:
             # Read and execute schema silently
-            with open('sql/schema.sql', 'r', encoding='utf-8') as f:
+            with open('database/sql/schema.sql', 'r', encoding='utf-8') as f:
                 schema = f.read()
             
             # Split by semicolon and execute each statement

@@ -8,7 +8,7 @@ from mysql.connector import Error
 from typing import Optional, List, Dict, Any
 import os
 from dotenv import load_dotenv
-from models import Student, School, Application
+from src.models import Student, School, Application
 
 # Load environment variables
 load_dotenv()

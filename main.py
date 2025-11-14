@@ -49,9 +49,7 @@ def check_and_setup_database():
             tables_exist = students_table and applications_table
         
         if not db_exists or not tables_exist:
-            print(f"\n{Fore.YELLOW}⚙️  First time setup: Creating database and tables...{Style.RESET_ALL}")
-            
-            # Read and execute schema
+            # Read and execute schema silently
             with open('sql/schema.sql', 'r', encoding='utf-8') as f:
                 schema = f.read()
             
@@ -65,11 +63,7 @@ def check_and_setup_database():
                 except mysql.connector.Error as err:
                     # Ignore "already exists" errors
                     if 'already exists' not in str(err).lower():
-                        print(f"{Fore.YELLOW}Warning: {err}{Style.RESET_ALL}")
-            
-            print(f"{Fore.GREEN}✓ Database setup complete!{Style.RESET_ALL}")
-            print(f"{Fore.GREEN}  - 10 universities loaded{Style.RESET_ALL}")
-            print(f"{Fore.GREEN}  - 30+ programs available{Style.RESET_ALL}\n")
+                        pass  # Silent execution
         
         cursor.close()
         conn.close()

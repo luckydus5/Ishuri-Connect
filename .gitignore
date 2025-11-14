@@ -33,6 +33,7 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 *.sql.backup
+sql/
 **/sql/backup/
 
 # Logs

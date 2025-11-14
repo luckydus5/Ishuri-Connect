@@ -28,27 +28,22 @@ def check_and_setup_database():
     DB_NAME = os.getenv('DB_NAME', 'ishuri_connect')
     
     try:
-        # Check if database and tables exist
+        # Connect directly to the database
         conn = mysql.connector.connect(
             host=DB_HOST,
             user=DB_USER,
-            password=DB_PASSWORD
+            password=DB_PASSWORD,
+            database=DB_NAME
         )
         cursor = conn.cursor()
-        cursor.execute(f"SHOW DATABASES LIKE '{DB_NAME}'")
-        db_exists = cursor.fetchone() is not None
         
         # Check if tables exist
-        tables_exist = False
-        if db_exists:
-            cursor.execute(f"USE {DB_NAME}")
-            cursor.execute("SHOW TABLES LIKE 'students'")
-            students_table = cursor.fetchone() is not None
-            cursor.execute("SHOW TABLES LIKE 'applications'")
-            applications_table = cursor.fetchone() is not None
-            tables_exist = students_table and applications_table
+        cursor.execute("SHOW TABLES LIKE 'students'")
+        students_table = cursor.fetchone() is not None
+        cursor.execute("SHOW TABLES LIKE 'applications'")
+        applications_table = cursor.fetchone() is not None
         
-        if not db_exists or not tables_exist:
+        if not students_table or not applications_table:
             # Read and execute schema silently
             with open('sql/schema.sql', 'r', encoding='utf-8') as f:
                 schema = f.read()
@@ -60,10 +55,8 @@ def check_and_setup_database():
                 try:
                     cursor.execute(statement)
                     conn.commit()
-                except mysql.connector.Error as err:
-                    # Ignore "already exists" errors
-                    if 'already exists' not in str(err).lower():
-                        pass  # Silent execution
+                except mysql.connector.Error:
+                    pass  # Ignore errors
         
         cursor.close()
         conn.close()

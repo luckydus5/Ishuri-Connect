@@ -18,8 +18,14 @@ An intelligent student-school matching platform that helps Rwandan students find
 ## 📋 Prerequisites
 
 - Python 3.8 or higher
-- MySQL 8.0 or higher
+- MySQL 8.0 or higher (or Aiven cloud database)
 - Virtual environment (recommended)
+
+## 📚 Documentation
+
+- **[DATABASE_TUTORIAL.md](DATABASE_TUTORIAL.md)** - Complete MySQL tutorial from scratch
+- **[AIVEN_SETUP_GUIDE.md](AIVEN_SETUP_GUIDE.md)** - Deploy to Aiven cloud database
+- **[.env.example](.env.example)** - Configuration template
 
 ## 🚀 Quick Start
 
@@ -50,25 +56,35 @@ This installs:
 - `python-dotenv` - Environment variable management
 - `colorama` - Colored terminal output
 
-### 4. Configure database
-Create `.env` file in project root:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_mysql_password
-DB_NAME=ishuri_connect
+### 4. Configure database connection
+```bash
+# Copy the example configuration
+cp .env.example .env
+
+# Edit .env with your database details
+# For Aiven: See AIVEN_SETUP_GUIDE.md
+# For local MySQL: Use localhost settings
 ```
 
-**For Team Collaboration:** See [DATABASE_SETUP.md](DATABASE_SETUP.md) for cloud database options (FreeSQLDatabase, Railway, PlanetScale)
+### 5. Test database connection
+```bash
+python test_connection.py
+```
 
-### 5. Run the application
+This will verify:
+- ✅ Environment variables loaded
+- ✅ Database connection working
+- ✅ Tables exist or can be created
+- ✅ Write permissions available
+
+### 6. Run the application
 ```bash
 python main.py
 ```
 
 **That's it!** The database will be created automatically on first run with:
 - ✅ 10 universities (UR, ALU, KIU, AUCA, MKU, etc.)
-- ✅ 30+ programs with realistic cutoffs and requirements
+- ✅ 26+ programs with realistic cutoffs and requirements
 - ✅ All tables and relationships
 
 ## 💻 Usage

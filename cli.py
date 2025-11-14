@@ -354,14 +354,33 @@ def get_school_recommendations(db, student):
             color = Fore.WHITE
         
         print(f"  {Fore.CYAN}┌{'─' * 70}┐{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}{i}. {school.name}{Style.RESET_ALL}" + " " * (68 - len(school.name) - len(str(i)) - 3) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {color}{badge}{Style.RESET_ALL} - Your marks: {student.aggregate_marks}% (Min required: {school.min_cutoff}%)" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district}, {school.province} | 📊 Cutoff: {school.min_cutoff}-{school.max_cutoff}%" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
-        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    🏠 {school.boarding_type} | 📚 {len(school.programs)} programs" + " " * (30) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL} {Fore.YELLOW}#{i}. {school.name}{Style.RESET_ALL}" + " " * (68 - len(school.name) - len(str(i)) - 4) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {color}{badge}{Style.RESET_ALL} - Your marks: {student.aggregate_marks}% (Min: {school.min_cutoff}%)" + " " * (10) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        print(f"  {Fore.CYAN}│{Style.RESET_ALL}    📍 {school.district}, {school.province} | 🏠 {school.boarding_type}" + " " * (25) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        
+        # Show programs that student qualifies for
+        if school.programs:
+            qualifying_programs = [p for p in school.programs if student.aggregate_marks >= p.get('cutoff_marks', 0)]
+            if qualifying_programs:
+                print(f"  {Fore.CYAN}│{Style.RESET_ALL}" + " " * 70 + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {Fore.GREEN}📚 Programs you qualify for:{Style.RESET_ALL}" + " " * 37 + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                for prog in qualifying_programs[:3]:  # Show top 3 programs
+                    prog_name = prog.get('program_name', 'N/A')
+                    prog_cutoff = prog.get('cutoff_marks', 0)
+                    prog_fees = prog.get('fees_range', 'N/A')
+                    prog_duration = prog.get('duration_years', 'N/A')
+                    
+                    # Truncate long names
+                    if len(prog_name) > 35:
+                        prog_name = prog_name[:32] + "..."
+                    
+                    print(f"  {Fore.CYAN}│{Style.RESET_ALL}       • {prog_name}" + " " * (70 - len(f"       • {prog_name}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                    print(f"  {Fore.CYAN}│{Style.RESET_ALL}         Cutoff: {prog_cutoff}% | Duration: {prog_duration}yrs | Fees: {prog_fees}" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+        
         print(f"  {Fore.CYAN}└{'─' * 70}┘{Style.RESET_ALL}\n")
     
     print(f"\n  {Fore.GREEN}✨ All schools listed accept your aggregate of {student.aggregate_marks}%!{Style.RESET_ALL}")
-    print(f"  {Fore.CYAN}💡 Tip: Higher cutoffs = more competitive programs{Style.RESET_ALL}\n")
+    print(f"  {Fore.CYAN}💡 Tip: Programs with higher cutoffs are more competitive{Style.RESET_ALL}\n")
 
 
 # ==================== APPLICATION FUNCTIONS ====================

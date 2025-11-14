@@ -337,7 +337,44 @@ def get_school_recommendations(db, student):
         print_info("The minimum cutoff in our database may be higher than your marks")
         return
     
-    print(f"\n  {Fore.GREEN}✨ Found {len(schools)} schools that accept your marks:{Style.RESET_ALL}\n")
+    # Remove duplicates by school ID
+    unique_schools = {}
+    for school in schools:
+        if school.school_id not in unique_schools:
+            unique_schools[school.school_id] = school
+    schools = list(unique_schools.values())
+    
+    # Sort schools: prioritize those offering student's desired program
+    if student.desired_program:
+        desired_lower = student.desired_program.lower()
+        schools_with_program = []
+        schools_without_program = []
+        
+        for school in schools:
+            has_desired_program = False
+            if school.programs:
+                for prog in school.programs:
+                    prog_name = prog.get('program_name', '').lower()
+                    if desired_lower in prog_name or prog_name in desired_lower:
+                        has_desired_program = True
+                        break
+            
+            if has_desired_program:
+                schools_with_program.append(school)
+            else:
+                schools_without_program.append(school)
+        
+        # Show schools with desired program first, then others
+        schools = schools_with_program + schools_without_program
+        
+        if schools_with_program:
+            print(f"\n  {Fore.GREEN}✨ Found {len(schools_with_program)} schools offering '{student.desired_program}':{Style.RESET_ALL}")
+            print(f"  {Fore.CYAN}💡 {len(schools_without_program)} other schools also shown below{Style.RESET_ALL}\n")
+        else:
+            print(f"\n  {Fore.YELLOW}⚠️  No schools offer '{student.desired_program}' in our database{Style.RESET_ALL}")
+            print(f"  {Fore.CYAN}💡 Showing {len(schools)} schools you qualify for based on marks:{Style.RESET_ALL}\n")
+    else:
+        print(f"\n  {Fore.GREEN}✨ Found {len(schools)} schools that accept your marks:{Style.RESET_ALL}\n")
     
     # Display all matching schools sorted by cutoff (highest to lowest)
     for i, school in enumerate(schools[:15], 1):  # Show top 15
@@ -362,10 +399,50 @@ def get_school_recommendations(db, student):
         if school.programs:
             qualifying_programs = [p for p in school.programs if student.aggregate_marks >= p.get('cutoff_marks', 0)]
             if qualifying_programs:
+                # Sort programs: prioritize student's desired program
+                if student.desired_program:
+                    desired_lower = student.desired_program.lower()
+                    matching_programs = []
+                    other_programs = []
+                    
+                    for prog in qualifying_programs:
+                        prog_name = prog.get('program_name', '').lower()
+                        if desired_lower in prog_name or prog_name in desired_lower:
+                            matching_programs.append(prog)
+                        else:
+                            other_programs.append(prog)
+                    
+                    qualifying_programs = matching_programs + other_programs
+                
                 print(f"  {Fore.CYAN}│{Style.RESET_ALL}" + " " * 70 + f"{Fore.CYAN}│{Style.RESET_ALL}")
                 print(f"  {Fore.CYAN}│{Style.RESET_ALL}    {Fore.GREEN}📚 Programs you qualify for:{Style.RESET_ALL}" + " " * 37 + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                
                 for prog in qualifying_programs[:3]:  # Show top 3 programs
                     prog_name = prog.get('program_name', 'N/A')
+                    prog_cutoff = prog.get('cutoff_marks', 0)
+                    prog_fees = prog.get('fees_range', 'N/A')
+                    prog_duration = prog.get('duration_years', 'N/A')
+                    
+                    # Check if this is the desired program
+                    is_desired = False
+                    if student.desired_program:
+                        desired_lower = student.desired_program.lower()
+                        prog_name_lower = prog_name.lower()
+                        if desired_lower in prog_name_lower or prog_name_lower in desired_lower:
+                            is_desired = True
+                    
+                    # Truncate long names
+                    display_name = prog_name
+                    if len(prog_name) > 35:
+                        display_name = prog_name[:32] + "..."
+                    
+                    # Highlight desired program
+                    if is_desired:
+                        print(f"  {Fore.CYAN}│{Style.RESET_ALL}       {Fore.YELLOW}⭐ {display_name} (YOUR CHOICE!){Style.RESET_ALL}" + " " * (70 - len(f"       ⭐ {display_name} (YOUR CHOICE!)")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                    else:
+                        print(f"  {Fore.CYAN}│{Style.RESET_ALL}       • {display_name}" + " " * (70 - len(f"       • {display_name}")) + f"{Fore.CYAN}│{Style.RESET_ALL}")
+                    
+                    print(f"  {Fore.CYAN}│{Style.RESET_ALL}         Cutoff: {prog_cutoff}% | Duration: {prog_duration}yrs | Fees: {prog_fees}" + " " * (5) + f"{Fore.CYAN}│{Style.RESET_ALL}")
                     prog_cutoff = prog.get('cutoff_marks', 0)
                     prog_fees = prog.get('fees_range', 'N/A')
                     prog_duration = prog.get('duration_years', 'N/A')

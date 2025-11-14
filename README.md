@@ -7,7 +7,7 @@ An intelligent student-school matching platform that helps Rwandan students find
 - ✨ **Beautiful colored CLI interface** with icons and professional formatting
 - 👤 **Comprehensive student registration**: Profile with secondary school, aggregate marks, subject combination, location preferences, desired program
 - 📊 **Intelligent matching algorithm**: Multi-criteria scoring (marks 30%, program 30%, location 20%, subjects 20%)
-- 🎓 **10 Rwandan universities**: Real institutions with 30+ programs
+- 🎓 **10 Rwandan universities**: Real institutions with 26+ programs
 - 📚 **Subject combinations**: PCM, PCB, MEG, HEG, LKE, MCB, and more
 - 🌍 **Location-based matching**: Preferences by district and province
 - 📧 **Email validation** and duplicate checking
@@ -20,12 +20,6 @@ An intelligent student-school matching platform that helps Rwandan students find
 - Python 3.8 or higher
 - MySQL 8.0 or higher (or Aiven cloud database)
 - Virtual environment (recommended)
-
-## 📚 Documentation
-
-- **[DATABASE_TUTORIAL.md](DATABASE_TUTORIAL.md)** - Complete MySQL tutorial from scratch
-- **[AIVEN_SETUP_GUIDE.md](AIVEN_SETUP_GUIDE.md)** - Deploy to Aiven cloud database
-- **[.env.example](.env.example)** - Configuration template
 
 ## 🚀 Quick Start
 
@@ -57,46 +51,24 @@ This installs:
 - `colorama` - Colored terminal output
 
 ### 4. Configure database connection
-```bash
-# Copy the example configuration
-cp .env.example .env
+Create a `.env` file in the project root:
 
-# Edit .env with your database details
-# For Aiven: See AIVEN_SETUP_GUIDE.md
-# For local MySQL: Use localhost settings
+```env
+DB_HOST=your_host
+DB_PORT=3306
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=ishuri_connect
 ```
 
-### 5. Test database connection
-```bash
-python test_connection.py
-```
-
-This will verify:
-- ✅ Environment variables loaded
-- ✅ Database connection working
-- ✅ Tables exist or can be created
-- ✅ Write permissions available
-
-### 6. Run the application
+### 5. Run the application
 ```bash
 python main.py
 ```
 
-**That's it!** The database will be created automatically on first run with:
-- ✅ 10 universities (UR, ALU, KIU, AUCA, MKU, etc.)
-- ✅ 26+ programs with realistic cutoffs and requirements
-- ✅ All tables and relationships
+**That's it!** The database will be created automatically on first run with sample data.
 
 ## 💻 Usage
-
-### Simply run:
-```bash
-python main.py
-```
-
-### What happens:
-1. **First run**: Database auto-created with sample universities and programs
-2. **Subsequent runs**: Uses existing database
 
 ### Registration Flow:
 1. 👤 Enter basic info (name, email)
@@ -108,353 +80,181 @@ python main.py
 
 ### Get Recommendations:
 - See intelligent matches sorted by compatibility
-- View match scores (🌟 Excellent 80+, ✅ Good 60+, 📊 Possible <60)
+- View match scores (🌟 Excellent, ✅ Good, 📊 Possible)
+- Filter by desired program with keyword search
 - See why each school matches (marks, program, combination, location)
 
 ### Apply to Schools:
 - Submit applications to matched schools
 - Track application status
 - View application history
-5. Enter your marks (press Enter without input to finish)
-6. View your average and school recommendations
 
-### Example Session
-
-```
-╔════════════════════════════════════════════════════════════════════╗
-║                                                                    ║
-║        🎓  ISHURI CONNECT - School Matching Platform  🎓        ║
-║                                                                    ║
-╚════════════════════════════════════════════════════════════════════╝
-
-  Welcome! This platform helps students find schools
-  that match their academic profile and interests.
-
-  💡 Tip: Press Ctrl+C at any time to exit.
-
-  ──────────────────────────────────────────────────────────────────
-
-  ┌─────────────────────────────────────────────────────────────────┐
-  │ 📝  STUDENT REGISTRATION                                         │
-  └─────────────────────────────────────────────────────────────────┘
-
-  Please provide your details below:
-
-  👤 First name: John
-  👤 Last name: Doe
-  📧 Email address: john.doe@example.com
-  📚 Course interest: Computer Science
-
-  ✅ Thank you John Doe!
-  📊 Now enter your marks (press Enter without typing to finish):
-
-  📝 Enter mark #1 (or press Enter to finish): 85
-     ✓ Mark 1: 85.0% added
-  📝 Enter mark #2 (or press Enter to finish): 90
-     ✓ Mark 2: 90.0% added
-  📝 Enter mark #3 (or press Enter to finish): 78
-     ✓ Mark 3: 78.0% added
-  📝 Enter mark #4 (or press Enter to finish):
-
-  ┌───────────────────────────────────────────────────┐
-  │ ✨ Registration Successful! ✨                    │
-  │ Welcome John Doe!                                 │
-  │ 📊 Your Average: 84.33%                           │
-  └───────────────────────────────────────────────────┘
-
-  ┌─────────────────────────────────────────────────────────────────┐
-  │ 🎯  SCHOOL RECOMMENDATIONS FOR COMPUTER SCIENCE                  │
-  └─────────────────────────────────────────────────────────────────┘
-
-  🔍 Searching for matching schools...
-
-  ✨ Found 1 school(s) that match your profile!
-
-  ┌────────────────────────────────────────────────────────────┐
-  │ 1. University of Rwanda                                    │
-  │    📌 Required minimum: 70%                                │
-  │    ✅ Your average:     84.33%                             │
-  └────────────────────────────────────────────────────────────┘
-
-  ──────────────────────────────────────────────────────────────────
-  ✨ Thank you for using Ishuri Connect! ✨
-  ──────────────────────────────────────────────────────────────────
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 Ishuri-Connect/
-├── main.py              # Application entry point (auto-initializes database)
-├── cli_new.py           # Enhanced CLI with intelligent matching
-├── models.py            # OOP classes (Student, School, Application)
-├── db.py                # Database operations (CRUD, matching)
-├── utils.py             # Utility functions (validation, calculations)
-├── setup_db.py          # Database setup script (optional)
-├── requirements.txt     # Python dependencies
-├── .env                 # Environment variables (not in git)
-├── .gitignore          # Git ignore rules
-├── sql/
-│   └── schema.sql      # Database schema with sample data
-└── ishuri/             # Virtual environment (not in git)
+├── main.py                    # Application entry point
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables (not in git)
+├── .gitignore                # Git ignore rules
+├── README.md                  # This file
+│
+├── src/                       # Application source code
+│   ├── __init__.py           # Package initializer
+│   ├── cli.py                # CLI interface with menus
+│   ├── models.py             # Data models (Student, School, Application)
+│   └── utils.py              # Utility functions
+│
+├── database/                  # Database layer
+│   ├── __init__.py           # Package initializer
+│   ├── db.py                 # Database operations (CRUD)
+│   └── sql/
+│       └── schema.sql        # Database schema
+│
+├── config/                    # Configuration files (reserved)
+│
+└── ishuri/                    # Virtual environment (not in git)
 ```
 
----
+### Key Files:
 
-## 🗄️ Database Setup
+**`main.py`**
+- Application entry point
+- Auto-initializes database on first run
+- Displays welcome banner
 
-### Local Development
+**`src/cli.py`**
+- Complete CLI interface
+- Menu systems (main menu, student menu)
+- Registration, recommendations, applications
+- Keyword-based program search
 
-1. **Install MySQL**
-   - **Windows**: [Download MySQL](https://dev.mysql.com/downloads/installer/)
-   - **Mac**: `brew install mysql`
-   - **Linux**: `sudo apt install mysql-server`
+**`src/models.py`**
+- `Student` class - student profiles
+- `School` class - university data
+- `Application` class - application tracking
+- Matching algorithms and scoring
 
-2. **Configure `.env`** (already done in Quick Start)
+**`database/db.py`**
+- `Database` class - MySQL operations
+- CRUD operations for all tables
+- Complex queries with JOINs
+- Program and school search
 
-3. **Run** - Database creates automatically!
+**`src/utils.py`**
+- Email validation
+- Helper functions
 
-### ☁️ Cloud Database (For Teams)
+## 🗄️ Database Schema
 
-For remote team collaboration, use a cloud MySQL provider:
+### Tables:
 
-#### **1. FreeSQLDatabase** (FREE - Best for Students)
-- Website: https://www.freesqldatabase.com/
-- ✅ 5MB free, no credit card
-- Setup: Create account → Get credentials → Update `.env`
+**students**
+- Basic info (name, email)
+- Academic (secondary school, aggregate marks, subject combination)
+- Preferences (location, desired program, boarding)
 
-#### **2. Railway.app** (FREE - $5/month credit)
-- Website: https://railway.app/
-- ✅ Easy GitHub integration, auto backups
-- Setup: Sign in → New Project → MySQL → Copy credentials
+**schools**
+- University details (name, district, province, type)
+- Admission (cutoff range, required subjects, competencies)
+- Contact (email, website)
 
-#### **3. PlanetScale** (FREE - 10GB storage)
-- Website: https://planetscale.com/
-- ✅ Industry-standard, database branching
-- Setup: Create database → Get connection string → Update `.env`
+**programs**
+- Program details (name, code, description)
+- Requirements (cutoff marks, combination, duration)
+- Fees information
 
+**applications**
+- Student applications to schools
+- Status tracking (pending, accepted, rejected)
+- Timestamps
 
-#### **5. Aiven** (FREE Trial - 30 days)
-- Website: https://aiven.io/
-- ✅ Professional features, multi-cloud
-
-### Team Collaboration Setup
-
-1. **Team Leader**: Set up cloud database
-2. **Share `.env` securely** (encrypted email, password manager)
-3. **All Members**: Clone repo → Add `.env` → Run `python main.py`
-4. **Everyone accesses same database** - real-time collaboration!
-
----
-
-## 📚 Technical Concepts Demonstrated
-
-This project demonstrates mastery of:
-
-### Object-Oriented Programming
-- **Classes**: `Student`, `School`, `Application`
-- **Methods**: `calculate_average()`, `matches_program()`, `accepts_combination()`
-- **Encapsulation**: Data + behavior in objects
-- **Inheritance**: Class hierarchies (if needed)
-
-### MySQL Database
-- **CREATE**: Tables with foreign keys, constraints
-- **INSERT**: Add students, schools, programs, applications
-- **SELECT**: Queries with JOINs, WHERE, ORDER BY
-- **UPDATE**: Modify records
-- **DELETE**: Remove records
-- **Complex Queries**: FIND_IN_SET, multi-condition WHERE
-
-### Python Data Structures
-- **Lists**: `marks = []`, `schools = []`, list comprehension
-- **Tuples**: `(school, score, details)`, return multiple values
-- **Dictionaries**: `{'student_id': 1, 'name': 'John'}`, menu options
-
-### Functions
-- **Parameters**: `def calculate_match_score(student, school, program=None)`
-- **Return values**: Single values, lists, tuples, dictionaries
-- **Helper functions**: `validate_email()`, `get_subject_combination()`
-
-### Real-World Skills
-- ✅ File I/O (reading `.env`, `schema.sql`)
-- ✅ Error handling (try/except)
-- ✅ Environment variables
-- ✅ Multi-criteria algorithms
-- ✅ User input validation
-- ✅ Colored terminal output
-
----
-
-## 🎓 Universities & Programs Included
-
-### 10 Rwandan Universities:
-1. **University of Rwanda** (Public, 60-85% cutoff)
-2. **African Leadership University** (Private, 65-80%)
-3. **Kigali Independent University** (Private, 50-70%)
-4. **AUCA** (Private, 55-72%)
-5. **Mount Kenya University** (Private, 48-68%)
-6. **University of Kigali** (Private, 50-70%)
-7. **UNILAK** (Private, 48-65%)
-8. **INES-Ruhengeri** (Private, 52-70%)
-9. **Catholic University** (Private, 53-72%)
-10. **UTTBS** (Private, 45-62%)
-
-### 30+ Programs:
-Computer Science, Medicine, Engineering, Business, Law, Nursing, IT, Architecture, Agriculture, Biotechnology, Tourism, Education, Economics, and more!
-
----
-
-## 🧠 How the Matching Algorithm Works
+## 🧠 Matching Algorithm
 
 ### Multi-Criteria Scoring (0-100 points)
 
-1. **Marks Match (30 points)**
-   - Student aggregate ≥ school cutoff
-   - Higher marks = higher score
+**1. Marks Match (30 points)**
+- Student aggregate ≥ school cutoff
+- Higher marks = higher score
 
-2. **Program Match (30 points)**
-   - School offers student's desired program
-   - Exact match = 30 points
-   - Related program = 25 points
+**2. Program Match (30 points)**
+- School offers student's desired program
+- Keyword-based search for flexibility
 
-3. **Location Match (20 points)**
-   - Same district = 20 points
-   - Same province = 15 points  
-   - Different location = 5 points
+**3. Location Match (20 points)**
+- Same district = 20 points
+- Same province = 15 points  
+- Different location = 5 points
 
-4. **Subject Compatibility (20 points)**
-   - School accepts student's combination (PCM, PCB, MEG, etc.)
-   - Match = 20 points, partial = 5 points
+**4. Subject Compatibility (20 points)**
+- School accepts student's combination
+- PCM, PCB, MEG, HEG, etc.
 
-### Match Quality Display
-- 🌟 **Excellent** (80-100): Perfect match!
-- ✅ **Good** (60-79): Strong candidate
-- 📊 **Possible** (<60): Consider applying
+### Match Quality
+- 🌟 **Excellent**: Perfect match
+- ✅ **Good**: Strong candidate
+- ❌ **Marks Too Low**: Doesn't meet minimum
 
----
+## 📚 Technical Stack
 
-## 🔒 Security Best Practices
+**Backend:**
+- Python 3.8+
+- MySQL 8.0+
+- mysql-connector-python
 
-### Never Commit Sensitive Data
-- `.env` already in `.gitignore`
-- Share credentials securely (not via GitHub)
+**Libraries:**
+- `colorama` - Terminal colors
+- `python-dotenv` - Environment configuration
+- `re` - Email validation
 
-### For Cloud Databases
-- Use strong passwords
-- Restrict IP access (if provider supports)
-- Create read-only users for viewers:
-  ```sql
-  CREATE USER 'viewer'@'%' IDENTIFIED BY 'password';
-  GRANT SELECT ON ishuri_connect.* TO 'viewer'@'%';
-  ```
+**Concepts:**
+- Object-Oriented Programming (OOP)
+- Database Design (MySQL)
+- CRUD Operations
+- Multi-criteria Algorithms
+- CLI Development
 
----
+## 🎓 Universities Included
+
+10 Rwandan universities with 26+ programs:
+- University of Rwanda (UR)
+- African Leadership University (ALU)
+- Kigali Independent University (KIU)
+- AUCA, MKU, UNILAK, INES-Ruhengeri, and more
+
+Programs: Computer Science, Medicine, Engineering, Business, Law, Nursing, IT, Architecture, and more.
 
 ## 🐛 Troubleshooting
 
-### "Access denied for user"
-- ✅ Check password in `.env`
-- ✅ Verify user has remote access (for cloud DBs)
-- ✅ Check if IP is whitelisted
+**"Access denied for user"**
+- Check password in `.env`
+- Verify database exists
 
-### "Can't connect to MySQL server"
-- ✅ Verify MySQL is running
-- ✅ Check host/port in `.env`
-- ✅ Firewall not blocking connection
+**"Can't connect to MySQL server"**
+- Verify MySQL is running
+- Check host/port in `.env`
 
-### "ModuleNotFoundError"
-- ✅ Activate virtual environment: `.\ishuri\Scripts\Activate.ps1`
-- ✅ Install dependencies: `pip install -r requirements.txt`
-
-### "Database already exists"
-- ✅ Normal! App uses existing database
-- ✅ To reset: Drop database and rerun
-
----
-
-## 📊 Database Schema
-
-### Tables Created:
-1. **students** - Comprehensive profiles (aggregate, combination, preferences)
-2. **schools** - Universities with cutoffs, locations, requirements
-3. **programs** - Programs offered (cutoffs, fees, duration, requirements)
-4. **applications** - Student applications with status tracking
-
-### Relationships:
-- Students → Applications (1:many)
-- Schools → Programs (1:many)
-- Schools → Applications (1:many)
-
----
-
-## 🚀 Innovation Roadmap
-
-### Phase 1: Core Features (v1.0)
-1. ✅ Intelligent school matching algorithm
-2. ✅ Comprehensive student profiles (aggregate, combinations, location)
-3. ✅ Detailed school database (10 universities, 30+ programs)
-4. ✅ Multi-criteria scoring (marks, program, location, subjects)
-5. ✅ Auto-database initialization
-
-### Phase 2: Enhanced Features (v2.0)
-6. 🔄 Application status tracking system
-7. 🔄 Document upload (transcripts, IDs)
-8. 🔄 Email notifications
-9. 🔄 Export recommendations to PDF
-10. 🔄 SMS integration for updates
-
-### Phase 3: Advanced Features (v3.0)
-11. 🔄 Web interface (Flask/Django)
-12. 🔄 Student dashboard with analytics
-13. 🔄 Admin panel for school management
-14. 🔄 AI-powered program suggestions based on trends
-
-### Competitive Advantages
-- 🎯 Local focus: Rwandan universities & programs
-- 🧠 Intelligent matching: Multi-criteria algorithm
-- 🚀 Easy setup: Auto-initialization, cloud database
-- 📚 Educational: Demonstrates OOP, MySQL, algorithms
-- 👥 Team-friendly: Cloud database collaboration
-
----
+**"ModuleNotFoundError"**
+- Activate virtual environment
+- Run `pip install -r requirements.txt`
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
+2. Create feature branch: `git checkout -b feature-name`
 3. Commit changes: `git commit -m 'Add feature'`
 4. Push: `git push origin feature-name`
-5. Open a Pull Request
-
----
+5. Open Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
-
----
-
-## 💬 Support
-
-For issues or questions, please open an issue on GitHub.
-
----
+MIT License
 
 ## 👤 Author
 
 **Lucky D. (@luckydus5)**
 - GitHub: [@luckydus5](https://github.com/luckydus5)
-- Project: Ishuri-Connect
-- Purpose: School Project - OOP with MySQL
-
----
-
-## 🙏 Acknowledgments
-
-- **Python Community**: For mysql-connector-python, colorama, python-dotenv
-- **MySQL**: For robust database management
-- **Rwanda Education Board**: For inspiration on university admission processes
-- **Learning**: This project demonstrates OOP fundamentals learned in class
+- Project: School Project - OOP with MySQL
 
 ---
 

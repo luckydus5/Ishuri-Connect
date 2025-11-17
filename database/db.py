@@ -32,7 +32,8 @@ class Database:
                 host=self.host,
                 user=self.user,
                 password=self.password,
-                database=self.database
+                database=self.database,
+                autocommit=False
             )
             if self.connection.is_connected():
                 return True
@@ -51,6 +52,12 @@ class Database:
         Demonstrates: function with parameters, tuple usage
         """
         try:
+            # Reconnect if connection is lost
+            if self.connection is None or not self.connection.is_connected():
+                if not self.connect():
+                    print(f"Error: MySQL Connection not available.")
+                    return None
+            
             cursor = self.connection.cursor()
             if params:
                 cursor.execute(query, params)  # Using tuple for params
@@ -70,8 +77,12 @@ class Database:
         Demonstrates: function returning lists/tuples
         """
         try:
-            if self.connection is None:
-                return []
+            # Reconnect if connection is lost
+            if self.connection is None or not self.connection.is_connected():
+                if not self.connect():
+                    print(f"Error fetching data: MySQL Connection not available.")
+                    return []
+            
             cursor = self.connection.cursor(dictionary=True)
             if params:
                 cursor.execute(query, params)

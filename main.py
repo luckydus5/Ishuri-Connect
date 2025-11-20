@@ -23,8 +23,9 @@ def print_welcome_banner():
     print("\n" + Fore.MAGENTA + "  💡 Tip: " + Style.RESET_ALL + "Press " + Fore.RED + "Ctrl+C" + Style.RESET_ALL + " at any time to exit.")
     print(Fore.CYAN + "  " + "─" * 66 + Style.RESET_ALL)
 
-"""Main function: prints banner and launches CLI application."""
+
 def main():
+    """Main function: prints banner and launches CLI application."""
     print_welcome_banner()
     # Launch the CLI interface defined in src/cli.py
     start_application()

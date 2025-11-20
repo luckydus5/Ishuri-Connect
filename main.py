@@ -1,4 +1,7 @@
-
+"""
+Ishuri Connect - Main entry point.
+Handles startup, prints welcome banner, and launches the CLI application.
+"""
 
 from colorama import init, Fore, Style
 from src.cli import start_application
@@ -20,10 +23,10 @@ def print_welcome_banner():
     print("\n" + Fore.MAGENTA + "  💡 Tip: " + Style.RESET_ALL + "Press " + Fore.RED + "Ctrl+C" + Style.RESET_ALL + " at any time to exit.")
     print(Fore.CYAN + "  " + "─" * 66 + Style.RESET_ALL)
 
-
+"""Main function: prints banner and launches CLI application."""
 def main():
     print_welcome_banner()
-    
+    # Launch the CLI interface defined in src/cli.py
     start_application()
 
 
@@ -31,7 +34,9 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        # Graceful exit when user presses Ctrl+C
         print("\n\n" + Fore.YELLOW + "  👋 Goodbye! Thank you for using Ishuri Connect.\n" + Style.RESET_ALL)
     except Exception as e:
+        # Catch-all for unexpected errors
         print("\n" + Fore.RED + f"  ❌ An unexpected error occurred: {e}" + Style.RESET_ALL)
         print(Fore.CYAN + "  💡 Please try again or contact support." + Style.RESET_ALL)

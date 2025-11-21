@@ -4,6 +4,7 @@ Handles startup, prints welcome banner, and launches the CLI application.
 """
 
 from colorama import init, Fore, Style
+from datetime import datetime
 from src.cli import start_application
 
 # Initialize colorama for Windows compatibility
@@ -20,6 +21,8 @@ def print_welcome_banner():
     
     print("\n" + Fore.GREEN + "  Welcome to Ishuri Connect!" + Style.RESET_ALL)
     print("  " + Fore.WHITE + "Find the perfect school that matches your academic profile." + Style.RESET_ALL)
+      # ✅ One-liner addition: show current date and time
+    print(Fore.BLUE + f"  📅 Today is {datetime.now().strftime('%A, %d %B %Y %H:%M:%S')}" + Style.RESET_ALL)
     print("\n" + Fore.MAGENTA + "  💡 Tip: " + Style.RESET_ALL + "Press " + Fore.RED + "Ctrl+C" + Style.RESET_ALL + " at any time to exit.")
     print(Fore.CYAN + "  " + "─" * 66 + Style.RESET_ALL)
 

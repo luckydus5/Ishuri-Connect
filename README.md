@@ -29,7 +29,7 @@ git clone https://github.com/luckydus5/Ishuri-Connect.git
 cd Ishuri-Connect
 ```
 
-### 2. Create and activate virtual environment
+### 2. Create and activate a virtual environment
 ```bash
 # Windows
 python -m venv ishuri

@@ -1,3 +1,8 @@
+# Installation:
+# Ensure pip is installed
+# Install dependencies:
+#   python -m pip install -r requirements.txt
+
 # Core Dependencies - What we're learning in class
 mysql-connector-python==9.5.0  # MySQL Database operations
 python-dotenv==1.2.1           # Environment variables (.env file)

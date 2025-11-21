@@ -258,4 +258,20 @@ MIT License
 
 ---
 
-**Built with ❤️ for Rwandan students seeking higher education**
+# Built with love for Rwandan students seeking higher education
+
+# Get Involved
+We welcome contributions! Suggest features, report bugs, or improve documentation.
+
+#Acknowledgements 
+Thanks to all universities, mentors, and contributors who helped make this project possible.
+
+# Our Contacts for questions or feedback 
+
+gabrielmugisha@gmail.com
+garymurasira@gmail.com
+benitor@gmail.com
+micoprince@gmail.com
+ lucky@gmail.com
+
+# Telephone: +250788358933
